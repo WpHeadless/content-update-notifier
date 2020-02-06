@@ -1,6 +1,6 @@
 <?php
 
-if (!get_option( 'cun_enabled' )) return;
+trigger_error('cun_enabled', E_USER_NOTICE);
 
 const CUN_EXCLUDED_POST_TYPES = [
   'revision',
@@ -37,6 +37,11 @@ function cun_notify_endpoint() {
   if ( $api_key ) {
     curl_setopt( $ch, CURLOPT_HTTPHEADER, [ CUN_API_KEY_HEADER . ': ' . $api_key ]);
   }
-  curl_exec( $ch );
+
+  $result = curl_exec( $ch );
+  if ( $result === false ) {
+    trigger_error( curl_error( $ch ) );
+  }
+
   curl_close( $ch );
 }
